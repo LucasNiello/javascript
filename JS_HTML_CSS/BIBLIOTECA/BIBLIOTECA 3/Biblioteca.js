@@ -2,7 +2,7 @@ let biblioteca = [];
 let livroParaAlterar = null;
 
 function mostrarSecao(secao) {
-    const secoes = ["cadastro", "consulta", "alterar", "emprestimo"];
+    const secoes = ["cadastro", "consulta", "alterar", "emprestimo", "venda"];
     secoes.forEach(id => document.getElementById(id).classList.add("hidden"));
     document.getElementById(secao).classList.remove("hidden");
 
@@ -10,7 +10,6 @@ function mostrarSecao(secao) {
         prepararEmprestimo();
     }
 }
-
 
 function adicionarLivro() {
     const titulo = document.getElementById("titulo").value;
@@ -90,7 +89,6 @@ function prepararEmprestimo() {
     const mensagemErro = document.getElementById("mensagem-erro");
     const formEmprestimo = document.getElementById("form-emprestimo");
 
-    // Limpa os campos
     listaLivros.innerHTML = "";
 
     if (biblioteca.length === 0) {
@@ -118,12 +116,74 @@ function registrarEmprestimo() {
     if (nomeUsuario && dataRetirada && dataDevolucao) {
         const livro = biblioteca[livroIndex];
         alert(`Livro "${livro.titulo}" emprestado para ${nomeUsuario} de ${dataRetirada} até ${dataDevolucao}.`);
-        
-        // Limpa os campos
+
         document.getElementById("nome-usuario").value = "";
         document.getElementById("data-retirada").value = "";
         document.getElementById("data-devolucao").value = "";
     } else {
         alert("Por favor, preencha todos os campos.");
     }
+}
+
+// Registro de vendas
+let vendas = [];
+
+function registrarVenda() {
+    const titulo = document.getElementById("venda-titulo").value;
+    const preco = document.getElementById("venda-preco").value;
+    const comprador = document.getElementById("venda-comprador").value;
+
+    if (titulo && preco && comprador) {
+        const listaVendas = document.getElementById("lista-vendas");
+        const item = document.createElement("li");
+        item.textContent = `Título: ${titulo}, Preço: ${preco}, Comprador: ${comprador}`;
+        listaVendas.appendChild(item);
+
+        vendas.push({ titulo, preco, comprador });
+
+        document.getElementById("venda-titulo").value = '';
+        document.getElementById("venda-preco").value = '';
+        document.getElementById("venda-comprador").value = '';
+    } else {
+        alert("Preencha todos os campos!");
+    }
+}
+
+// Relatório de vendas
+function gerarRelatorioVendas() {
+    const tabelaRelatorio = document.getElementById("tabela-relatorio-vendas");
+    tabelaRelatorio.innerHTML = ''; //Limpa a tabela
+
+    if (vendas.length === 0) {
+       alert("Nenhuma venda registrada.");
+        return;
+    }
+
+    let totalVendas = 0; // Variável para armazenar o total de vendas
+
+    if (totalVendas.length === 0) {
+        alert("Valor de venda não registrado.");
+        return;
+    }
+
+    vendas.forEach((venda) => {
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+        <td>${venda.titulo}</td>
+        <td>R$${parseFloat(venda.preco).toFixed(2)}</td>
+        <td>${venda.comprador}</td>
+        `;
+        tabelaRelatorio.appendChild(linha);
+
+        // Adiciona o valor da venda ao total
+        totalVendas += parseFloat(venda.preco);
+    })
+
+    // Adiciona uma linha para o total de vendas
+    const linhaTotal = document.createElement("tr");
+linhaTotal.innerHTML = `
+    <td><strong>Total de Vendas:</strong></td>
+    <td><strong>R$${totalVendas.toFixed(2)}</strong></td>
+    <td></td>
+`;
 }
