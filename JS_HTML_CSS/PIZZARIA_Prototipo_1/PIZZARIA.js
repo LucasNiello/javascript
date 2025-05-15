@@ -1,13 +1,17 @@
+// Lista de pizzas disponíveis no sistema
 let cardapio = [];
+
+// Variável para armazenar a pizza que será alterada
 let pizzaParaAlterar = null;
 
+// Função para mostrar apenas a seção clicada e esconder as outras
 function mostrarSecao(secao) {
     const secoes = ["cadastro", "consulta", "alterar", "monte-sua-pizza", "venda", "relatorio"];
     secoes.forEach(id => document.getElementById(id).classList.add("hidden"));
     document.getElementById(secao).classList.remove("hidden");
 }
 
-
+// Função para adicionar uma nova pizza ao cardápio
 function adicionarPizza() {
     const nome = document.getElementById("titulo").value;
     const ingredientes = document.getElementById("ingredientes").value;
@@ -25,7 +29,7 @@ function adicionarPizza() {
     }
 }
 
-
+// Atualiza a lista de pizzas exibida na seção de consulta
 function atualizarLista(listaFiltrada = cardapio) {
     let lista = document.getElementById("lista-pizzas");
     lista.innerHTML = "";
@@ -40,6 +44,7 @@ function atualizarLista(listaFiltrada = cardapio) {
     });
 }
 
+// Filtra pizzas pelo nome na seção de consulta
 function buscarPizza() {
     const busca = document.getElementById("busca").value.toLowerCase();
     const resultados = cardapio.filter((pizza) => 
@@ -48,6 +53,7 @@ function buscarPizza() {
     atualizarLista(resultados);
 }
 
+// Localiza uma pizza para ser alterada e exibe o formulário
 function buscarPizzaParaAlterar() {
     const busca = document.getElementById("busca-alterar").value.toLowerCase();
     pizzaParaAlterar = cardapio.find((pizza) =>
@@ -56,15 +62,16 @@ function buscarPizzaParaAlterar() {
 
     if (pizzaParaAlterar) {
         document.getElementById("form-alterar").classList.remove("hidden");
-        document.getElementById("novo-nome").value = pizzaParaAlterar.nome;
+        document.getElementById("novo-titulo").value = pizzaParaAlterar.nome;
         document.getElementById("novo-ingredientes").value = pizzaParaAlterar.ingredientes;
         document.getElementById("novo-preco").value = pizzaParaAlterar.preco;
     }
 }
 
+// Aplica as alterações feitas à pizza selecionada
 function alterarPizza() {
     if (pizzaParaAlterar) {
-        const novoNome = document.getElementById("novo-nome").value;
+        const novoNome = document.getElementById("novo-titulo").value;
         const novoIngredientes = document.getElementById("novo-ingredientes").value;
         const novoPreco = parseFloat(document.getElementById("novo-preco").value);
 
@@ -82,6 +89,7 @@ function alterarPizza() {
     }
 }
 
+// Função para registrar uma venda e exibir na lista
 function registrarVenda() {
     const nomePizza = document.getElementById("venda-titulo").value;
     const precoPizza = parseFloat(document.getElementById("venda-preco").value);
@@ -101,24 +109,10 @@ function registrarVenda() {
     }
 }
 
-// CALCULAR PREÇO DA PIZZA _ Sessão "Monte sua pizza"
-function calcularPrecoPizza() {
-    const base = document.getElementById("base-pizza");
-    const ingredientes = document.getElementById("ingredientes-sua-pizza");
-    const precoBase = parseFloat(base.options[base.selectedIndex].dataset.preco);
-
-    let precoTotal = precoBase;
-
-    for (let option of ingredientes.selectedOptions) {
-        precoTotal += parseFloat(option.dataset.preco);
-    }
-
-    document.getElementById("preco-pizza").value = precoTotal.toFixed(2);
-}
-
-// RELATÓRIO DE ITENS ADICIONADOS
+// Seção: MONTE SUA PIZZA
 let precoTotal = 0;
 
+// Adiciona os itens selecionados ao relatório e soma os preços
 function adicionarItem() {
     const itens = document.getElementById('seletor-itens');
     const selecionados = Array.from(itens.selectedOptions);
@@ -134,11 +128,13 @@ function adicionarItem() {
     document.getElementById('precoTotal').value = precoTotal.toFixed(2);
 }
 
+// Extrai o valor numérico do texto do item
 function extrairPreco(texto) {
     const match = texto.match(/R\$ ?([\d,]+(?:\.\d+)?)/);
     return match ? parseFloat(match[1].replace(',', '.')) : 0;
 }
 
+// Adiciona visualmente o item na lista do relatório
 function adicionarAoRelatorio(texto) {
     const lista = document.getElementById('lista-itens');
     const item = document.createElement('li');
